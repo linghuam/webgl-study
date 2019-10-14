@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>chapter-02-01</title>
+</head>
+<body>
+  <canvas id="webgl" width="400" height="400"></canvas>
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script>
+  var gl;
+  function main() {
+    var canvas = document.getElementById('webgl');
+    
+    gl = getWebGLContext(canvas);
+    if (!gl) {
+      console.log('获取不到webgl上下文！！！');
+      return;
+    }
+
+    // 指定清空canvas的颜色
+    // r,g,b,a 范围 0-1，超出范围的自动截断为0或1
+    // 此方法相当于设置了一个全局变量背景色，会一直保留，直到再次调用
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    // 清空canvas
+    // 即用背景色填充，擦除已经绘制的内容
+    // 并不是简单的清空canvas画布背景，传递 gl.COLOR_BUFFER_BIT 表示清空颜色缓冲区（color buffer）
+    /*
+    * 参数值1: gl.COLOR_BUFFER_BIT 颜色缓冲 默认: gl.clearColor(0.0, 0.0, 0.0, 0.0)
+    * 参数值2: gl.DEPTH_BUFFER_BIT 深度缓冲 默认: gl.clearDepth(1.0)
+    * 参数值3: gl.STENCIL_BUFFER_BIT 模板缓冲 默认: gl.clearStencil(0)
+    * 位操作符（|）可指定多个缓冲区
+    */
+    gl.clear(gl.COLOR_BUFFER_BIT);
+  }
+  main();
+  </script>
+</body>
+</html>
