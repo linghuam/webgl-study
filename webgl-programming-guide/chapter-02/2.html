@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>chapter-02-绘制一个点</title>
+</head>
+<body>
+  <canvas id="webgl" width="400" height="400"></canvas>
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script>
+  var gl;
+  function drawPoint(gl) {
+    // 定义着色器
+    var vs = `
+      void main() {
+        // 点的位置
+        // vec4 是齐次坐标，齐次坐标 (x, y, z, w) 等价于三维坐标 (x/w, y/w, z/w);所以如果齐次坐标第四个分量为1，可当作三维坐标使用
+        gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+        // 点的大小，10像素
+        gl_PointSize = 10.0; 
+      }
+    `;
+    var fs = `
+      void main() {
+        // 点的颜色
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+      }
+    `;
+    if (!initShaders(gl, vs, fs)) {
+      console.log('Fail shader!');
+      return;
+    }
+    // 清空颜色缓存
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    // 绘制点
+    /*
+    * gl.drawArrays(mode, first, count)
+    * mode: 绘制类型，gl.POINTS or gl.LINES or gl.LINE_STRIP or gl.LINE_LOOP or gl.TRIANGLES or gl.TRIANGLES_STRIP or gl.TRIANGLES_FAN
+    * first: 指定开始绘制的顶点序号
+    * count: 指定绘制的顶点数
+    */
+    gl.drawArrays(gl.POINTS, 0, 1);
+  }
+  function main() {
+    var canvas = document.getElementById('webgl');
+    
+    gl = getWebGLContext(canvas);
+    if (!gl) {
+      console.log('获取不到webgl上下文！！！');
+      return;
+    }
+
+    drawPoint(gl);
+  }
+  main();
+  </script>
+</body>
+</html>
