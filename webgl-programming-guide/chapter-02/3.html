@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>chapter-02-绘制一个点2</title>
+</head>
+<body>
+  <canvas id="webgl" width="400" height="400"></canvas>
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script>
+  var gl;
+  function drawPoint(gl) {
+    var vs = `
+      attribute vec4 a_Position;
+      void main() {
+        gl_Position = a_Position;
+        gl_PointSize = 10.0; 
+      }
+    `;
+    var fs = `
+      void main() {
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+      }
+    `;
+    if (!initShaders(gl, vs, fs)) {
+      console.log('Fail shader!');
+      return;
+    }
+
+    // 获取 attribute 变量的存储位置,返回内存存储地址，>=0
+    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+
+    if (a_Position < 0) {
+      console.log('获取变量位置失败！');
+      return;
+    }
+
+    // 将顶点位置传输给 attribute 变量
+    /*
+    * 同族函数: 命名规则 【基础函数名 + 参数个数 + f(浮点)、i(整数)】
+    * gl.vertexAttrib1f(location, v0)
+    * gl.vertexAttrib2f(location, v0, v1)
+    * gl.vertexAttrib3f(location, v0, v1, v2)
+    * gl.vertexAttrib4f(location, v0, v1, v2, v3)
+    */
+    gl.vertexAttrib3f(a_Position, 0.0, 0.0, 0.0);
+
+    // 清空颜色缓存
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // 绘制点
+    /*
+    * gl.drawArrays(mode, first, count)
+    * mode: 绘制类型，gl.POINTS or gl.LINES or gl.LINE_STRIP or gl.LINE_LOOP or gl.TRIANGLES or gl.TRIANGLES_STRIP or gl.TRIANGLES_FAN
+    * first: 指定开始绘制的顶点序号
+    * count: 指定绘制的顶点数
+    */
+    gl.drawArrays(gl.POINTS, 0, 1);
+  }
+  function main() {
+    var canvas = document.getElementById('webgl');
+    
+    gl = getWebGLContext(canvas);
+    if (!gl) {
+      console.log('获取不到webgl上下文！！！');
+      return;
+    }
+
+    drawPoint(gl);
+  }
+  main();
+  </script>
+</body>
+</html>
