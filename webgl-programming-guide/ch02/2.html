@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>chapter-02-绘制一个点2</title>
+  <title>ch02-绘制一个点</title>
 </head>
 <body>
   <canvas id="webgl" width="400" height="400"></canvas>
@@ -14,15 +14,19 @@
   <script>
   var gl;
   function drawPoint(gl) {
+    // 定义着色器
     var vs = `
-      attribute vec4 a_Position;
       void main() {
-        gl_Position = a_Position;
+        // 点的位置
+        // vec4 是齐次坐标，齐次坐标 (x, y, z, w) 等价于三维坐标 (x/w, y/w, z/w);所以如果齐次坐标第四个分量为1，可当作三维坐标使用
+        gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+        // 点的大小，10像素
         gl_PointSize = 10.0; 
       }
     `;
     var fs = `
       void main() {
+        // 点的颜色
         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
       }
     `;
@@ -30,29 +34,9 @@
       console.log('Fail shader!');
       return;
     }
-
-    // 获取 attribute 变量的存储位置,返回内存存储地址，>=0
-    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-
-    if (a_Position < 0) {
-      console.log('获取变量位置失败！');
-      return;
-    }
-
-    // 将顶点位置传输给 attribute 变量
-    /*
-    * 同族函数: 命名规则 【基础函数名 + 参数个数 + f(浮点)、i(整数)】
-    * gl.vertexAttrib1f(location, v0)
-    * gl.vertexAttrib2f(location, v0, v1)
-    * gl.vertexAttrib3f(location, v0, v1, v2)
-    * gl.vertexAttrib4f(location, v0, v1, v2, v3)
-    */
-    gl.vertexAttrib3f(a_Position, 0.0, 0.0, 0.0);
-
     // 清空颜色缓存
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
-
     // 绘制点
     /*
     * gl.drawArrays(mode, first, count)
